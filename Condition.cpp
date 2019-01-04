@@ -2,8 +2,8 @@
 
 Condition::Condition() {}
 
-Condition::Condition(Condition::Type type, Variable variable1, Variable variable2) {
+Condition::Condition(Condition::Type type, Variable leftHandSide, Variable rightHandSide) {
     this->type = type;
-    this->variable1 = variable1;
-    this->variable2 = variable2;
+    this->leftHandSide = leftHandSide;
+    this->rightHandSide = rightHandSide;
 }

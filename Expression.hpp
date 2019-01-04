@@ -5,7 +5,10 @@
 #ifndef COMPILER_EXPRESSION_HPP
 #define COMPILER_EXPRESSION_HPP
 
+#include <iostream>
 #include "Variable.hpp"
+
+using namespace std;
 
 class Expression {
 public:
@@ -19,12 +22,18 @@ public:
     };
     Expression();
     Expression(Variable variable);
-    Expression(Type type, Variable variable1, variable2);
+    Expression(Type type, Variable leftHandSide, Variable rightHandSide);
 
+    void compile();
+    Variable getLeftHandSide();
+    Variable getRightHandSide();
+    Type getType();
+    string getTypeString();
+    string getExpressionString();
 private:
     Type type;
-    Variable variable1;
-    Variable variable2;
+    Variable leftHandSide;
+    Variable rightHandSide;
 };
 
 

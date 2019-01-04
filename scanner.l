@@ -5,6 +5,9 @@
 #include "Condition.hpp"
 #include "Expression.hpp"
 #include "Command.hpp"
+#include "WhileLoop.hpp"
+#include "Write.hpp"
+#include "Assignment.hpp"
 
 #undef  YY_DECL
 #define YY_DECL int yy::Scanner::yylex(yy::Parser::semantic_type* const lval, yy::Parser::location_type *loc)

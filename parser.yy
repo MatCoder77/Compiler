@@ -19,6 +19,9 @@
    #include "Condition.hpp"
    #include "Expression.hpp"
    #include "Command.hpp"
+   #include "WhileLoop.hpp"
+   #include "Write.hpp"
+   #include "Assignment.hpp"
 }
 
 %code{
@@ -33,6 +36,9 @@
    #include "Condition.hpp"
    #include "Expression.hpp"
    #include "Command.hpp"
+   #include "WhileLoop.hpp"
+   #include "Write.hpp"
+   #include "Assignment.hpp"
 
 
 #undef yylex
@@ -45,9 +51,9 @@
 %type <Variable> identifier
 %type <Variable> value
 %type <Expression> expression
-%type <Condition> condition
-%type <Command> command
-%type <std::vector<Command>> commands
+%type <ConditionPointer> condition
+%type <CommandPointer> command
+%type <CommandPointers> commands
 
 %token <std::string>  NUMBER
 %token <std::string>  PIDENTIFIER
@@ -71,8 +77,11 @@
 
 program
    : DECLARE declarations IN commands END 			{ 
-									std::cout<<"Parsing..." <<endl;
-									
+									std::cout<<"Parsing..." << endl;
+									cout << $4.size() << endl;
+									for( auto c : $4) {
+									    c->compile();
+									}
 					  			}
    ;
 
@@ -84,16 +93,19 @@ declarations
 
 commands
    : commands command 						{ 
-									
+									cout << "dodaje komendy" << endl;
+									$1.push_back($2);
+									$$ = $1;
 								}
    | command 							{ 
-									
+									cout << "dodaje komende" << endl;
+									$$.push_back($1);
 								}
    ;
 
 command
    : identifier ASSIGNMENT expression SEMICOLON 		{
-         								
+         								$$ = std::make_shared<Assignment>($1, $3);
       								}
    | IF condition THEN commands ELSE commands ENDIF 		{
 
@@ -102,7 +114,8 @@ command
 
       								}
    | WHILE condition DO commands ENDWHILE 			{
-
+									cout << "Czytam whilea" << endl;
+									$$ = std::make_shared<WhileLoop>($2, $4);
       								}
    | DO commands WHILE condition ENDDO 				{
 
@@ -117,13 +130,14 @@ command
          								
       								}
    | WRITE value SEMICOLON 					{
-         								
+									cout << "Czytam WRITE" << endl;
+         								$$ = std::make_shared<Write>();	
       								}
    ;
 
 expression
    : value 							{ 
-									
+									$$ = Expression($1);
 								}
    | value ADD value 						{ 
 									
@@ -153,7 +167,8 @@ condition
 									
 								}
    | value GREATER value  					{ 
-									
+									cout << "czytam warunek" << endl;
+									$$ = std::make_shared<Condition>(Condition::Type::GREATER, $1, $3);
 								}
    | value LESSER_EQUAL value  					{ 
 									 
@@ -165,16 +180,19 @@ condition
 
 value
    : NUMBER 							{ 
-									
+									cout << "czytam stałą" << endl;
+									long long var = std::stoll($1);
+									$$ = Variable(var);
 								}
    | identifier 						{ 
-									
+									$$ = $1;
 								}
    ;
 
 identifier
    : PIDENTIFIER 						{ 
-									
+									std::cout<<"czytam zmienna" << endl;
+									$$ = Variable($1);
 								}
    | PIDENTIFIER LEFT_BRACE PIDENTIFIER RIGHT_BRACE  		{ 
 									

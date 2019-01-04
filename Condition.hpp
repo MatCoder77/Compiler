@@ -1,10 +1,7 @@
-//
-// Created by mateusz on 02.01.19.
-//
-
 #ifndef COMPILER_CONDITION_HPP
 #define COMPILER_CONDITION_HPP
 
+#include <memory>
 #include "Variable.hpp"
 
 class Condition {
@@ -19,13 +16,14 @@ public:
     };
 
     Condition();
-    Condition(Type type, Variable variable1, Variable variable2);
+    Condition(Type type, Variable leftHandSide, Variable rightHandSide);
 
 private:
     Type type;
-    Variable variable1;
-    Variable variable2;
+    Variable leftHandSide;
+    Variable rightHandSide;
 };
 
+using ConditionPointer = shared_ptr<Condition>;
 
 #endif //COMPILER_CONDITION_HPP
