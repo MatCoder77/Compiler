@@ -22,6 +22,8 @@
    #include "WhileLoop.hpp"
    #include "Write.hpp"
    #include "Assignment.hpp"
+   #include "DoWhileLoop.hpp"
+   #include "ForLoop.hpp"
 }
 
 %code{
@@ -39,8 +41,8 @@
    #include "WhileLoop.hpp"
    #include "Write.hpp"
    #include "Assignment.hpp"
-
-
+   #include "DoWhileLoop.hpp"
+   #include "ForLoop.hpp"
 #undef yylex
 #define yylex scanner.yylex
 }
@@ -118,10 +120,12 @@ command
 									$$ = std::make_shared<WhileLoop>($2, $4);
       								}
    | DO commands WHILE condition ENDDO 				{
-
+									cout << "Czytam dowhile" << endl;
+									$$ = make_shared<DoWhileLoop>($2, $4);
       								}
    | FOR PIDENTIFIER FROM value TO value DO commands ENDFOR 	{
-
+									cout << "Czytam For to" << endl;
+									$$ = make_shared<ForLoop>($2, $4, ForLoop::Type::TO, $6, $8);
       								}
    | FOR PIDENTIFIER FROM value DOWNTO value DO commands ENDFOR	{
 

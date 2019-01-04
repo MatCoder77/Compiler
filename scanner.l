@@ -8,6 +8,8 @@
 #include "WhileLoop.hpp"
 #include "Write.hpp"
 #include "Assignment.hpp"
+#include "DoWhileLoop.hpp"
+#include "ForLoop.hpp"
 
 #undef  YY_DECL
 #define YY_DECL int yy::Scanner::yylex(yy::Parser::semantic_type* const lval, yy::Parser::location_type *loc)
