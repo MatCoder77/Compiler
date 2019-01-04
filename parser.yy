@@ -26,6 +26,7 @@
    #include "ForLoop.hpp"
    #include "IfStatement.hpp"
    #include "IfElseStatement.hpp"
+   #include "Read.hpp"
 }
 
 %code{
@@ -47,6 +48,7 @@
    #include "ForLoop.hpp"
    #include "IfStatement.hpp"
    #include "IfElseStatement.hpp"
+   #include "Read.hpp"
 
 #undef yylex
 #define yylex scanner.yylex
@@ -135,14 +137,16 @@ command
 									$$ = make_shared<ForLoop>($2, $4, ForLoop::Type::TO, $6, $8);
       								}
    | FOR PIDENTIFIER FROM value DOWNTO value DO commands ENDFOR	{
-
+									cout << "Czytam For downto" << endl;
+									$$ = make_shared<ForLoop>($2, $4, ForLoop::Type::DOWNTO, $6, $8);
       								}
    | READ identifier SEMICOLON 					{
-         								
+         								cout << "Czytam READ" << endl;
+									$$ = make_shared<Read>($2);
       								}
    | WRITE value SEMICOLON 					{
 									cout << "Czytam WRITE" << endl;
-         								$$ = std::make_shared<Write>();	
+         								$$ = std::make_shared<Write>($2);	
       								}
    ;
 
@@ -151,41 +155,46 @@ expression
 									$$ = Expression($1);
 								}
    | value ADD value 						{ 
-									
+									$$ = Expression(Expression::Type::ADDITION, $1, $3);
 								}
    | value SUB value 						{ 
-									
+									$$ = Expression(Expression::Type::SUBTRACTION, $1, $3);
 								}
    | value MUL value 						{ 
-									 
+									$$ = Expression(Expression::Type::MULTIPLICATION, $1, $3);
 								}
    | value DIV value 						{ 
-									
+									$$ = Expression(Expression::Type::DIVISION, $1, $3);
 								}
    | value MOD value 						{ 
-									
+									$$ = Expression(Expression::Type::MODULO, $1, $3);
 								}
    ;
 
 condition
    : value EQUAL value  					{ 
-									
+									cout << "czytam warumek" << endl;
+									$$ = std::make_shared<Condition>(Condition::Type::EQUAL, $1, $3);
 								}
    | value NOT_EQUAL value 					{ 
-									 
+									cout << "czytam warumek" << endl;
+									$$ = std::make_shared<Condition>(Condition::Type::NOT_EQUAL, $1, $3);
 								}
    | value LESSER value   					{ 
-									
+									cout << "czytam warumek" << endl;
+									$$ = std::make_shared<Condition>(Condition::Type::LESSER, $1, $3);
 								}
    | value GREATER value  					{ 
 									cout << "czytam warunek" << endl;
 									$$ = std::make_shared<Condition>(Condition::Type::GREATER, $1, $3);
 								}
    | value LESSER_EQUAL value  					{ 
-									 
+									cout << "czytam warumek" << endl;
+									$$ = std::make_shared<Condition>(Condition::Type::LESSER_EQUAL, $1, $3);
 								}
    | value GREATER_EQUAL value 					{ 
-									
+									cout << "czytam warumek" << endl;
+									$$ = std::make_shared<Condition>(Condition::Type::GREATER_EQUAL, $1, $3);
 								}
    ;
 
@@ -202,7 +211,7 @@ value
 
 identifier
    : PIDENTIFIER 						{ 
-									std::cout<<"czytam zmienna" << endl;
+									std::cout<< "czytam zmienna" << endl;
 									$$ = Variable($1);
 								}
    | PIDENTIFIER LEFT_BRACE PIDENTIFIER RIGHT_BRACE  		{ 
