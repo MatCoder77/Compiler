@@ -24,6 +24,8 @@
    #include "Assignment.hpp"
    #include "DoWhileLoop.hpp"
    #include "ForLoop.hpp"
+   #include "IfStatement.hpp"
+   #include "IfElseStatement.hpp"
 }
 
 %code{
@@ -43,6 +45,9 @@
    #include "Assignment.hpp"
    #include "DoWhileLoop.hpp"
    #include "ForLoop.hpp"
+   #include "IfStatement.hpp"
+   #include "IfElseStatement.hpp"
+
 #undef yylex
 #define yylex scanner.yylex
 }
@@ -110,10 +115,12 @@ command
          								$$ = std::make_shared<Assignment>($1, $3);
       								}
    | IF condition THEN commands ELSE commands ENDIF 		{
-
+									cout << "Czytam IfElse" << endl;
+									$$ = make_shared<IfElseStatement>($2, $4, $6);
       								}
    | IF condition THEN commands ENDIF 				{
-
+									cout << "Czytam If" << endl;
+									$$ = make_shared<IfStatement>($2, $4);
       								}
    | WHILE condition DO commands ENDWHILE 			{
 									cout << "Czytam whilea" << endl;
