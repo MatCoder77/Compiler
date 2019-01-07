@@ -15,11 +15,14 @@ namespace yy {
 
     class Scanner : public yyFlexLexer {
     public:
-        Scanner(istream *input) : yyFlexLexer(input) {}
+        Scanner(istream *input) : yyFlexLexer(input) {
+            loc = new yy::Parser::location_type();
+        }
         using FlexLexer::yylex;
-        virtual int yylex(yy::Parser::semantic_type* const lval, yy::Parser::location_type *loc);
+        virtual int yylex(yy::Parser::semantic_type* const lval, yy::Parser::location_type* loc);
+        yy::Parser::location_type* loc;
     private:
-        yy::Parser::semantic_type *yylval = nullptr;
+        yy::Parser::semantic_type* yylval = nullptr;
     };
 
 }
