@@ -5,5 +5,6 @@ Write::Write(Variable variable) {
 }
 
 void Write::compile() {
-    cout << "WRITE variable" << endl;
+    codeBlock = variable.loadValueToRegister(B);
+    codeBlock.addPUT(B);
 }

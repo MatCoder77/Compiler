@@ -2,6 +2,8 @@
 #define COMPILER_VARIABLE_HPP
 
 #include <string>
+#include "CodeBlock.hpp"
+#include <iostream>
 
 using namespace std;
 
@@ -19,7 +21,7 @@ public:
     Variable(long long value);
     Variable(string identifier, long long begin, long long end);
     Variable(Variable owningArray, long long indexInOwningArray);
-    Variable(Variable owningArray, string indexInOwningArrayIdentifier);
+    Variable(Variable owningArray, Variable indexInOwningArrayVariable);
     ~Variable(){};
 
     string getIdentifier();
@@ -35,6 +37,9 @@ public:
     bool isVariableInitialized();
     void setInitialized(bool initialized);
     string getIndexInOwningArrayIdentifier();
+    static CodeBlock generateNumberInRegister(long long number, Register reg);
+    CodeBlock loadValueToRegister(Register reg);
+    CodeBlock loadAddressToRegister(Register reg = Register::A);
 private:
     Type type;
     string identifier;
@@ -47,6 +52,8 @@ private:
     bool isInitialized;
     long long indexInOwningArray;
     string indexInOwningArrayIdentifier;
+    long long addressOfIndexInOwningArrayIdentifier;
+    long long owningArrayAddress;
 };
 
 

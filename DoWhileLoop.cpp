@@ -6,5 +6,5 @@ DoWhileLoop::DoWhileLoop(CommandPointers commands, ConditionPointer condition) {
 }
 
 void DoWhileLoop::compile() {
-    cout << "DO commands WHILE condition ENDWHILE" << endl;
+
 }

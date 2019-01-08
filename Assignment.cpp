@@ -6,5 +6,7 @@ Assignment::Assignment(Variable variable, Expression expression) {
 }
 
 void Assignment::compile() {
-    cout << variable.getIdentifier() << " := " << "expression" << endl;
+    codeBlock = expression.loadResultToRegister(B);
+    codeBlock.append(variable.loadAddressToRegister(A));
+    codeBlock.addSTORE(B);
 }

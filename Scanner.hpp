@@ -16,7 +16,7 @@ namespace yy {
     class Scanner : public yyFlexLexer {
     public:
         Scanner(istream *input) : yyFlexLexer(input) {
-            loc = new yy::Parser::location_type();
+
         }
         using FlexLexer::yylex;
         virtual int yylex(yy::Parser::semantic_type* const lval, yy::Parser::location_type* loc);

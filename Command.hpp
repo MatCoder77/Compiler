@@ -8,6 +8,7 @@
 #include <memory>
 #include <vector>
 #include <iostream>
+#include "CodeBlock.hpp"
 
 using  namespace std;
 
@@ -17,6 +18,11 @@ public:
     virtual ~Command(){}
 
     virtual void compile() = 0;
+
+    CodeBlock getCodeBlock();
+
+protected:
+    CodeBlock codeBlock;
 };
 
 using CommandPointer = shared_ptr<Command>;

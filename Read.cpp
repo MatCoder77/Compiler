@@ -5,5 +5,8 @@ Read::Read(Variable variable) {
 }
 
 void Read::compile() {
-    cout << "READ variable" << endl;
+    codeBlock.addGET(B);
+    CodeBlock loadVarAddressBlock = variable.loadAddressToRegister(A);
+    codeBlock.append(loadVarAddressBlock);
+    codeBlock.addSTORE(B);
 }

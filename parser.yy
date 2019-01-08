@@ -28,6 +28,7 @@
    #include "IfStatement.hpp"
    #include "IfElseStatement.hpp"
    #include "Read.hpp"
+   #include "CodeBlock.hpp"
 }
 
 %code{
@@ -50,6 +51,7 @@
    #include "IfStatement.hpp"
    #include "IfElseStatement.hpp"
    #include "Read.hpp"
+   #include "CodeBlock.hpp"
 
 #undef yylex
 #define yylex scanner.yylex
@@ -89,10 +91,7 @@
 program
    : DECLARE declarations IN commands END 			{ 
 									std::cout<<"Parsing..." << endl;
-									cout << $4.size() << endl;
-									for( auto c : $4) {
-									    c->compile();
-									}
+									parsingDriver.setCommands($4);
 					  			}
    ;
 
@@ -280,7 +279,7 @@ identifier
 									errorMessage += index.getIdentifier();
 									errorMessage += " is uninitialzed";
 									parsingDriver.checkCondition(index.isVariableInitialized(), errorMessage);
-									Variable arrayElement = parsingDriver.getElementFromDeclaredArray(variable.getIdentifier(), index.getIdentifier());
+									Variable arrayElement = parsingDriver.getElementFromDeclaredArray(variable.getIdentifier(), index);
 									cout << "Odwołanie do elementu " << arrayElement.getIndexInOwningArrayIdentifier() << " tablicy " << arrayElement.getIdentifier() << endl;
 									$$ = arrayElement;
 								}

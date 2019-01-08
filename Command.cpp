@@ -3,3 +3,7 @@
 //
 
 #include "Command.hpp"
+
+CodeBlock Command::getCodeBlock() {
+    return  codeBlock;
+}

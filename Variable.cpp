@@ -3,6 +3,7 @@
 //
 
 #include "Variable.hpp"
+#include "CodeBlock.hpp"
 
 Variable::Variable(string identifier, bool isIterator) {
     this->type = VARIABLE;
@@ -41,7 +42,7 @@ Variable::Variable(Variable owningArray, long long indexInOwningArray) {
     this->indexInOwningArray = indexInOwningArray;
 }
 
-Variable::Variable(Variable owningArray, string indexInOwningArrayIdentifier) {
+Variable::Variable(Variable owningArray, Variable indexInOwningArrayVariable) {
     this->type = ARRAY_ELEMENT_VAR_INDEX;
     this->identifier = owningArray.getIdentifier();
     this->firstIndex = owningArray.getFirstIndex();
@@ -49,7 +50,9 @@ Variable::Variable(Variable owningArray, string indexInOwningArrayIdentifier) {
     this->size = lastIndex - firstIndex + 1;
     this->isIterator = false;
     this->isInitialized = true;
-    this->indexInOwningArrayIdentifier = indexInOwningArrayIdentifier;
+    this->indexInOwningArrayIdentifier = indexInOwningArrayVariable.getIdentifier();
+    this->addressOfIndexInOwningArrayIdentifier = indexInOwningArrayVariable.getAddress();
+    this->owningArrayAddress = owningArray.getAddress();
 }
 
 string Variable::getIdentifier() {
@@ -102,4 +105,65 @@ bool Variable::isVariableInitialized() {
 
 void Variable::setInitialized(bool initialized) {
     isInitialized = initialized;
+}
+
+CodeBlock Variable::generateNumberInRegister(long long number, Register reg) {
+    CodeBlock codeBlock;
+    vector<int> reminders;
+
+    while(number) {
+        reminders.push_back(number % 2);
+        number /= 2;
+    }
+
+    codeBlock.addSUB(reg, reg);
+    for(int i = reminders.size() - 1; i >= 0; i--) {
+        if(reminders[i]) {
+            codeBlock.addINC(reg);
+        }
+        if(i) {
+            codeBlock.addADD(reg, reg);
+        }
+    }
+    return codeBlock;
+}
+
+CodeBlock Variable::loadValueToRegister(Register reg) {
+    CodeBlock codeBlock;
+    if(type == NUMBER) {
+        codeBlock = generateNumberInRegister(value, reg);
+    }
+    else if(type == VARIABLE || type == ARRAY_ELEMENT_VAR_INDEX || type == ARRAY_ELEMENT_FIXED_INDEX) {
+        codeBlock = loadAddressToRegister(A);
+        codeBlock.addLOAD(reg);
+    }
+    else {
+        cout << "Called load value for variable of type ARRAY" << endl;
+        exit(1);
+    }
+    return codeBlock;
+}
+
+CodeBlock Variable::loadAddressToRegister(Register reg) {
+    CodeBlock codeBlock;
+    if(type == VARIABLE || type == ARRAY || type == ARRAY_ELEMENT_FIXED_INDEX) {
+        codeBlock = generateNumberInRegister(address, reg);
+    }
+    else if(type == ARRAY_ELEMENT_VAR_INDEX) {
+        codeBlock = generateNumberInRegister(addressOfIndexInOwningArrayIdentifier, A);
+        codeBlock.addLOAD(A);
+        CodeBlock loadArrayAddressBlock = generateNumberInRegister(owningArrayAddress, H);
+        codeBlock.append(loadArrayAddressBlock);
+        codeBlock.addADD(A, H);
+        CodeBlock loadFirstIndexValueBlock = generateNumberInRegister(firstIndex, H);
+        codeBlock.append(loadFirstIndexValueBlock);
+        codeBlock.addSUB(A, H);
+        if(reg != A) {
+            codeBlock.addCOPY(reg, A);
+        }
+    } else {
+        cout << "Called get address for variable of TYPE NUMBER" << endl;
+        exit(1);
+    }
+    return codeBlock;
 }

@@ -13,6 +13,7 @@
 #include "IfStatement.hpp"
 #include "IfElseStatement.hpp"
 #include "Read.hpp"
+#include "CodeBlock.hpp"
 
 #undef  YY_DECL
 #define YY_DECL int yy::Scanner::yylex(yy::Parser::semantic_type* const lval, yy::Parser::location_type *loc)
@@ -37,6 +38,7 @@ using token = yy::Parser::token;
 
 %{          /** Code executed at the beginning of yylex **/
             yylval = lval;
+	    this->loc = loc;
 %}
 
 "[" 		  { BEGIN(COMMENT); }

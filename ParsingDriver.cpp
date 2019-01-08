@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <regex>
 
 yy::ParsingDriver::~ParsingDriver() {
     delete(scanner);
@@ -64,7 +65,7 @@ Variable yy::ParsingDriver::getElementFromDeclaredArray(string identifier, long 
     return arrayElement;
 }
 
-Variable yy::ParsingDriver::getElementFromDeclaredArray(string identifier, string variableWithIndex) {
+Variable yy::ParsingDriver::getElementFromDeclaredArray(string identifier, Variable variableWithIndex) {
     Variable declaredArray = getDeclaredVariable(identifier);
     if(declaredArray.getType() != Variable::ARRAY) {
         string message = "Variable ";
@@ -91,6 +92,64 @@ void yy::ParsingDriver::markVariableAsInitialized(string identifier) {
         message += identifier;
         parser->error(*(scanner->loc), message);
     }
+}
+
+void yy::ParsingDriver::setCommands(CommandPointers commands) {
+    this->programCommands = commands;
+}
+
+void yy::ParsingDriver::compile(const char *const filename) {
+    for(auto& cmd : programCommands) {
+        cmd->compile();
+        programCode.append(cmd->getCodeBlock());
+    }
+
+    programCode.addHALT();
+
+    long long lineNumber;
+
+    ofstream outputFileRaw("raw.txt");
+
+    for(auto& instruction : programCode.getCode()) {
+        outputFileRaw << instruction << "\n";
+    }
+
+    outputFileRaw.close();
+
+    for(long long i = 0; i < programCode.getCode().size(); i++) {
+        if(programCode.getCode()[i].find('#') != string::npos) {
+            lineNumber = i;
+            string cmd = programCode.getCode()[i];
+            string labelID = cmd.substr(cmd.find('#') + 1);
+            string label = "$";
+            label += labelID;
+            programCode.getCode().erase(programCode.getCode().begin() + i);
+            for(long long k = 0; k < programCode.getCode().size(); k++) {
+                if(programCode.getCode()[k].find(label) != string::npos) {
+                    string jumpCmd = programCode.getCode()[k];
+                    string escapedLabel = "\\$";
+                    escapedLabel += labelID;
+                    escapedLabel += "$";
+                    string newCmd = std::regex_replace(jumpCmd, std::regex(escapedLabel), to_string(lineNumber));
+                    programCode.getCode()[k] = newCmd;
+                }
+            }
+        }
+    }
+    //labels resolution
+
+    ofstream outputFile(filename);
+
+    for(auto& instruction : programCode.getCode()) {
+        outputFile << instruction << "\n";
+    }
+
+    outputFile.close();
+
+}
+
+void yy::ParsingDriver::saveToFile(const char *const filename) {
+
 }
 
 ostream& yy::ParsingDriver::print(std::ostream &stream) {

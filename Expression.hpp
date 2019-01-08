@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include "Variable.hpp"
+#include "CodeBlock.hpp"
 
 using namespace std;
 
@@ -30,6 +31,7 @@ public:
     Type getType();
     string getTypeString();
     string getExpressionString();
+    CodeBlock loadResultToRegister(Register reg);
 private:
     Type type;
     Variable leftHandSide;

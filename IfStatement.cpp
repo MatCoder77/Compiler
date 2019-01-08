@@ -10,5 +10,18 @@ IfStatement::~IfStatement() {
 }
 
 void IfStatement::compile() {
-    cout << "IF condition THEN commands ENDIF" << endl;
+    ConditionBlock conditionBlock = condition->evaluateCondition(B, C);
+
+    string IF_TRUE_LABEL = conditionBlock.getIfTrueLabel();
+    string IF_FALSE_LABEL = conditionBlock.getIfFalseLabel();
+
+    codeBlock = conditionBlock.getCodeBlock();
+    codeBlock.addLABEL(IF_TRUE_LABEL);
+
+    for(auto& cmd : commands) {
+        cmd->compile();
+        codeBlock.append(cmd->getCodeBlock());
+    }
+
+    codeBlock.addLABEL(IF_FALSE_LABEL);
 }
