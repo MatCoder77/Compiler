@@ -161,28 +161,36 @@ command
    | FOR PIDENTIFIER FROM value TO value			{
 									Variable iterator($2, true);
 									parsingDriver.declare(iterator);
+									Variable counter($2 + "@");
+									parsingDriver.declare(counter);
 									cout << "Zadeklarowano iterator " << iterator.getIdentifier() << endl;
 									cout << "Przydzielony adres: " << iterator.getAddress() << endl;
 									cout << "Tworzenie pętli FOR o iteratorze " << iterator.getIdentifier() << endl;
 								}
      DO commands ENDFOR 					{
 									Variable iter = parsingDriver.getDeclaredVariable($2);
-									$$ = make_shared<ForLoop>(iter, $4, ForLoop::Type::TO, $6, $9);
+									Variable count = parsingDriver.getDeclaredVariable($2 + "@");
+									$$ = make_shared<ForLoop>(iter, count, $4, ForLoop::Type::TO, $6, $9);
 									cout << "Utworzono pętlę FOR o iteratorze " << iter.getIdentifier() << endl;
 									parsingDriver.undeclare(iter);
+									parsingDriver.undeclare(count);
       								}
    | FOR PIDENTIFIER FROM value DOWNTO value 			{
 									Variable iterator($2, true);
 									parsingDriver.declare(iterator);
+									Variable counter($2 + "@");
+									parsingDriver.declare(counter);
 									cout << "Zadeklarowano iterator " << iterator.getIdentifier() << endl;
 									cout << "Przydzielony adres: " << iterator.getAddress() << endl;
 									cout << "Tworzenie pętli FOR DOWNTO o iteratorze " << iterator.getIdentifier() << endl;
 								}
      DO commands ENDFOR						{
 									Variable iter = parsingDriver.getDeclaredVariable($2);
-									$$ = make_shared<ForLoop>(iter, $4, ForLoop::Type::DOWNTO, $6, $9);
+									Variable count = parsingDriver.getDeclaredVariable($2 + "@");
+									$$ = make_shared<ForLoop>(iter, count, $4, ForLoop::Type::DOWNTO, $6, $9);
 									cout << "Utworzono pętlę FOR o iteratorze " << iter.getIdentifier() << endl;
 									parsingDriver.undeclare(iter);
+									parsingDriver.undeclare(count);
       								}
    | READ identifier SEMICOLON 					{
          								Variable& variable = $2;

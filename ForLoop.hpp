@@ -14,11 +14,12 @@ public:
         TO,
         DOWNTO
     };
-    ForLoop(Variable iterator, Variable rangeBegin, Type type, Variable rangeEnd, CommandPointers commands);
+    ForLoop(Variable iterator, Variable counter, Variable rangeBegin, Type type, Variable rangeEnd, CommandPointers commands);
 
     void compile();
 private:
     Variable iterator;
+    Variable counter;
     Variable rangeBegin;
     Variable rangeEnd;
     Type type;
