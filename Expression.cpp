@@ -64,35 +64,29 @@ CodeBlock Expression::loadResultToRegister(Register reg) {
             break;
         }
         case MULTIPLICATION: {
-            string C_GREATER_LABEL = CodeBlock::createUniqueLabel();
-            string LOOP_1_LABEL = CodeBlock::createUniqueLabel();
-            string LOOP_2_LABEL = CodeBlock::createUniqueLabel();
+            string BEG_LABEL = CodeBlock::createUniqueLabel();
             string END_LABEL = CodeBlock::createUniqueLabel();
+            string IS_ODD_LABEL = CodeBlock::createUniqueLabel();
+            string NOT_ODD_LABEL = CodeBlock::createUniqueLabel();
 
-            codeBlock.addSUB(D, D);
-            codeBlock.append(leftHandSide.loadValueToRegister(B));
-            codeBlock.addJZERO(B, END_LABEL);
-            codeBlock.append(rightHandSide.loadValueToRegister(C));
+            codeBlock.addSUB(B, B);
+            codeBlock.append(leftHandSide.loadValueToRegister(C));
             codeBlock.addJZERO(C, END_LABEL);
-            codeBlock.addCOPY(E, B);
-            codeBlock.addSUB(E, C);
-            codeBlock.addJZERO(E, C_GREATER_LABEL);
-            codeBlock.addLABEL(LOOP_1_LABEL);
-            codeBlock.addJZERO(C, END_LABEL);
-            codeBlock.addADD(D, B);
-            codeBlock.addDEC(C);
-            codeBlock.addJUMP(LOOP_1_LABEL);
-            codeBlock.addLABEL(LOOP_2_LABEL);
-            codeBlock.addJZERO(B, END_LABEL);
-            codeBlock.addLABEL(C_GREATER_LABEL);
-            codeBlock.addADD(D, C);
-            codeBlock.addDEC(B);
-            codeBlock.addJUMP(LOOP_2_LABEL);
+            codeBlock.append(rightHandSide.loadValueToRegister(D));
+            codeBlock.addLABEL(BEG_LABEL);
+            codeBlock.addJZERO(D, END_LABEL);
+            codeBlock.addJODD(D, IS_ODD_LABEL);
+            codeBlock.addJUMP(NOT_ODD_LABEL);
+            codeBlock.addLABEL(IS_ODD_LABEL);
+            codeBlock.addADD(B, C);
+            codeBlock.addLABEL(NOT_ODD_LABEL);
+            codeBlock.addHALF(D);
+            codeBlock.addADD(C, C);
+            codeBlock.addJUMP(BEG_LABEL);
             codeBlock.addLABEL(END_LABEL);
-            if(reg != D) {
-                codeBlock.addCOPY(reg, D);
+            if(reg != B) {
+                codeBlock.addCOPY(reg, B);
             }
-
             break;
         }
 
