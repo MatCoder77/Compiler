@@ -43,7 +43,7 @@ using token = yy::Parser::token;
 
 "[" 		  { BEGIN(COMMENT); }
 <COMMENT>"]"      { BEGIN(INITIAL); }
-<COMMENT>\n       {}
+<COMMENT>\n       { loc->lines(yyleng); }
 <COMMENT>.        {}
 <COMMENT><<EOF>>  { return token::ERROR; }
 
