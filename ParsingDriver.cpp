@@ -13,7 +13,6 @@ yy::ParsingDriver::~ParsingDriver() {
 
 void yy::ParsingDriver::parse(const char *const filename) {
     ifstream file(filename);
-    cout << "W parse" << endl;
     if (!file) {
         exit(EXIT_FAILURE);
     }
@@ -108,14 +107,7 @@ void yy::ParsingDriver::compile(const char *const filename) {
 
     long long lineNumber;
 
-    ofstream outputFileRaw("raw.txt");
-
-    for(auto& instruction : programCode.getCode()) {
-        outputFileRaw << instruction << "\n";
-    }
-
-    outputFileRaw.close();
-
+    //labels resolution
     for(long long i = 0; i < programCode.getCode().size(); i++) {
         if(programCode.getCode()[i].find('#') != string::npos) {
             lineNumber = i;
@@ -136,7 +128,6 @@ void yy::ParsingDriver::compile(const char *const filename) {
             }
         }
     }
-    //labels resolution
 
     ofstream outputFile(filename);
 

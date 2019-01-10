@@ -89,8 +89,7 @@
 %%
 
 program
-   : DECLARE declarations IN commands END 			{ 
-									std::cout<<"Parsing..." << endl;
+   : DECLARE declarations IN commands END 			{
 									parsingDriver.setCommands($4);
 					  			}
    ;
@@ -100,8 +99,8 @@ declarations
    | declarations PIDENTIFIER SEMICOLON				{
 									Variable variableToDeclare($2);
 									parsingDriver.declare(variableToDeclare);
-									cout << "Deklaracja zmiennej " << variableToDeclare.getIdentifier() << endl;
-									cout << "Przydzielony adres: " << variableToDeclare.getAddress() << endl;
+									//cout << "Deklaracja zmiennej " << variableToDeclare.getIdentifier() << endl;
+									//cout << "Przydzielony adres: " << variableToDeclare.getAddress() << endl;
 								}
    | declarations PIDENTIFIER LEFT_BRACE NUMBER COLON NUMBER RIGHT_BRACE SEMICOLON {
 									Variable firstIndex(std::stoll($4));
@@ -112,19 +111,17 @@ declarations
 									errorMessage += ", last index is smaller than first";
 									parsingDriver.checkCondition(array.getLastIndex() >= array.getFirstIndex(), errorMessage);
 									parsingDriver.declare(array);
-									cout << "Deklaracja tablicy " << array.getIdentifier() << "(" << array.getFirstIndex() << ":" << array.getLastIndex() << ")" << endl;
-									cout << "Przydzielony adres: " << array.getAddress() << endl;
+									//cout<<"Deklaracja tablicy " << array.getIdentifier() << "(" << array.getFirstIndex() << ":" << array.getLastIndex() << ")" << endl;
+									//cout<<"Przydzielony adres: " << array.getAddress() << endl;
 								}
    ;
 
 commands
    : commands command 						{ 
-									cout << "dodaje komendy" << endl;
 									$1.push_back($2);
 									$$ = $1;
 								}
    | command 							{ 
-									cout << "dodaje komende" << endl;
 									$$.push_back($1);
 								}
    ;
@@ -140,22 +137,18 @@ command
 									parsingDriver.checkCondition(targetVariable.getType() != Variable::Type::ARRAY, errorMessage);
          								$$ = std::make_shared<Assignment>(targetVariable, $3);
 									parsingDriver.markVariableAsInitialized(targetVariable.getIdentifier());
-									cout << "Przypisanie do zmiennej " << targetVariable.getIdentifier() << endl;
+									//cout << "Przypisanie do zmiennej " << targetVariable.getIdentifier() << endl;
       								}
    | IF condition THEN commands ELSE commands ENDIF 		{
-									cout << "Czytam IfElse" << endl;
 									$$ = make_shared<IfElseStatement>($2, $4, $6);
       								}
    | IF condition THEN commands ENDIF 				{
-									cout << "Czytam If" << endl;
 									$$ = make_shared<IfStatement>($2, $4);
       								}
    | WHILE condition DO commands ENDWHILE 			{
-									cout << "Czytam whilea" << endl;
 									$$ = std::make_shared<WhileLoop>($2, $4);
       								}
    | DO commands WHILE condition ENDDO 				{
-									cout << "Czytam dowhile" << endl;
 									$$ = make_shared<DoWhileLoop>($2, $4);
       								}
    | FOR PIDENTIFIER FROM value TO value			{
@@ -163,15 +156,15 @@ command
 									parsingDriver.declare(iterator);
 									Variable counter($2 + "@");
 									parsingDriver.declare(counter);
-									cout << "Zadeklarowano iterator " << iterator.getIdentifier() << endl;
-									cout << "Przydzielony adres: " << iterator.getAddress() << endl;
-									cout << "Tworzenie pętli FOR o iteratorze " << iterator.getIdentifier() << endl;
+									//cout << "Zadeklarowano iterator " << iterator.getIdentifier() << endl;
+									//cout << "Przydzielony adres: " << iterator.getAddress() << endl;
+									//cout << "Tworzenie pętli FOR o iteratorze " << iterator.getIdentifier() << endl;
 								}
      DO commands ENDFOR 					{
 									Variable iter = parsingDriver.getDeclaredVariable($2);
 									Variable count = parsingDriver.getDeclaredVariable($2 + "@");
 									$$ = make_shared<ForLoop>(iter, count, $4, ForLoop::Type::TO, $6, $9);
-									cout << "Utworzono pętlę FOR o iteratorze " << iter.getIdentifier() << endl;
+									//cout << "Utworzono pętlę FOR o iteratorze " << iter.getIdentifier() << endl;
 									parsingDriver.undeclare(iter);
 									parsingDriver.undeclare(count);
       								}
@@ -180,15 +173,15 @@ command
 									parsingDriver.declare(iterator);
 									Variable counter($2 + "@");
 									parsingDriver.declare(counter);
-									cout << "Zadeklarowano iterator " << iterator.getIdentifier() << endl;
-									cout << "Przydzielony adres: " << iterator.getAddress() << endl;
-									cout << "Tworzenie pętli FOR DOWNTO o iteratorze " << iterator.getIdentifier() << endl;
+									//cout << "Zadeklarowano iterator " << iterator.getIdentifier() << endl;
+									//cout << "Przydzielony adres: " << iterator.getAddress() << endl;
+									//cout << "Tworzenie pętli FOR DOWNTO o iteratorze " << iterator.getIdentifier() << endl;
 								}
      DO commands ENDFOR						{
 									Variable iter = parsingDriver.getDeclaredVariable($2);
 									Variable count = parsingDriver.getDeclaredVariable($2 + "@");
 									$$ = make_shared<ForLoop>(iter, count, $4, ForLoop::Type::DOWNTO, $6, $9);
-									cout << "Utworzono pętlę FOR o iteratorze " << iter.getIdentifier() << endl;
+									//cout << "Utworzono pętlę FOR o iteratorze " << iter.getIdentifier() << endl;
 									parsingDriver.undeclare(iter);
 									parsingDriver.undeclare(count);
       								}
@@ -196,11 +189,10 @@ command
          								Variable& variable = $2;
 									$$ = make_shared<Read>(variable);
 									parsingDriver.markVariableAsInitialized(variable.getIdentifier());
-									cout << "Wczytano wartość do zmiennej " << variable.getIdentifier() << endl;
+									//cout << "Wczytano wartość do zmiennej " << variable.getIdentifier() << endl;
 									
       								}
    | WRITE value SEMICOLON 					{
-									cout << "Czytam WRITE" << endl;
          								$$ = std::make_shared<Write>($2);	
       								}
    ;
@@ -228,34 +220,27 @@ expression
 
 condition
    : value EQUAL value  					{ 
-									cout << "czytam warumek" << endl;
 									$$ = std::make_shared<Condition>(Condition::Type::EQUAL, $1, $3);
 								}
    | value NOT_EQUAL value 					{ 
-									cout << "czytam warumek" << endl;
 									$$ = std::make_shared<Condition>(Condition::Type::NOT_EQUAL, $1, $3);
 								}
    | value LESSER value   					{ 
-									cout << "czytam warumek" << endl;
 									$$ = std::make_shared<Condition>(Condition::Type::LESSER, $1, $3);
 								}
    | value GREATER value  					{ 
-									cout << "czytam warunek" << endl;
 									$$ = std::make_shared<Condition>(Condition::Type::GREATER, $1, $3);
 								}
    | value LESSER_EQUAL value  					{ 
-									cout << "czytam warumek" << endl;
 									$$ = std::make_shared<Condition>(Condition::Type::LESSER_EQUAL, $1, $3);
 								}
    | value GREATER_EQUAL value 					{ 
-									cout << "czytam warumek" << endl;
 									$$ = std::make_shared<Condition>(Condition::Type::GREATER_EQUAL, $1, $3);
 								}
    ;
 
 value
    : NUMBER 							{ 
-									cout << "czytam stałą" << endl;
 									long long var = std::stoll($1);
 									$$ = Variable(var);
 								}
@@ -273,7 +258,7 @@ identifier
 									Variable variable = parsingDriver.getDeclaredVariable($1);
 									string errorMessage = "Array connot be used in this context";
 									parsingDriver.checkCondition(variable.getType() != Variable::Type::ARRAY, errorMessage);
-									std::cout<< "Użycie zmiennej " <<  variable.getIdentifier() << endl;
+									//cout<< "Użycie zmiennej " <<  variable.getIdentifier() << endl;
 									$$ = variable;									
 								}
    | PIDENTIFIER LEFT_BRACE PIDENTIFIER RIGHT_BRACE  		{ 
@@ -288,7 +273,7 @@ identifier
 									errorMessage += " is uninitialzed";
 									parsingDriver.checkCondition(index.isVariableInitialized(), errorMessage);
 									Variable arrayElement = parsingDriver.getElementFromDeclaredArray(variable.getIdentifier(), index);
-									cout << "Odwołanie do elementu " << arrayElement.getIndexInOwningArrayIdentifier() << " tablicy " << arrayElement.getIdentifier() << endl;
+									//cout<<"Odwołanie do elementu "<<arrayElement.getIndexInOwningArrayIdentifier()<<" tablicy "<<arrayElement.getIdentifier()<<endl;
 									$$ = arrayElement;
 								}
    | PIDENTIFIER LEFT_BRACE NUMBER RIGHT_BRACE 			{
@@ -303,8 +288,8 @@ identifier
 									errorMessage += " out of bounds";
 									parsingDriver.checkCondition(index >= variable.getFirstIndex() && index <= variable.getLastIndex(), errorMessage);
 									Variable arrayElement = parsingDriver.getElementFromDeclaredArray(variable.getIdentifier(), index);
-									cout << "Odwołanie do elementu " << arrayElement.getIndexInOwningArray() << " tablicy " << arrayElement.getIdentifier() << endl;
-									cout << "Adres elementu: " << arrayElement.getAddress() << endl;
+									//cout << "Odwołanie do elementu " << arrayElement.getIndexInOwningArray() << " tablicy " << arrayElement.getIdentifier() << endl;
+									//cout << "Adres elementu: " << arrayElement.getAddress() << endl;
 									$$ = arrayElement;
 								}
    ;

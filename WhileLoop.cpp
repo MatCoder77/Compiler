@@ -10,11 +10,8 @@ WhileLoop::~WhileLoop() {}
 void WhileLoop::compile() {
     ConditionBlock conditionBlock = condition->evaluateCondition(B, C);
     string WHILE_BEGIN_LABEL = CodeBlock::createUniqueLabel();
-    cout << "WHILE_BEGIN_LABEL " << WHILE_BEGIN_LABEL << endl;
     string IF_TRUE_LABEL = conditionBlock.getIfTrueLabel();
-    cout << "IF_TRUE_LABEL " << IF_TRUE_LABEL << endl;
     string IF_FALSE_LABEL = conditionBlock.getIfFalseLabel();
-    cout << "IF_FALSE_LABEL " << IF_FALSE_LABEL << endl;
     CodeBlock conditionCode = conditionBlock.getCodeBlock();
 
     codeBlock.addLABEL(WHILE_BEGIN_LABEL);
