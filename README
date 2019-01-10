@@ -1,0 +1,4 @@
+Autor: Mateusz Kimmel
+Numer indeksu: 236382
+
+Po wykonaniu polecenia 'make' utworzony zostanie plik wykonywalny 'kompilator', będąc w folderze, kompilujemy wykonując polecenie './kompilator <nazwa pliku wejściowego> <nazwa pliku wyjściowego>'
