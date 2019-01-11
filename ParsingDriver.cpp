@@ -107,6 +107,7 @@ void yy::ParsingDriver::compile(const char *const filename) {
 
     long long lineNumber;
 
+
     //labels resolution
     for(long long i = 0; i < programCode.getCode().size(); i++) {
         if(programCode.getCode()[i].find('#') != string::npos) {
@@ -126,6 +127,7 @@ void yy::ParsingDriver::compile(const char *const filename) {
                     programCode.getCode()[k] = newCmd;
                 }
             }
+            i--;
         }
     }
 
