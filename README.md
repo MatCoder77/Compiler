@@ -63,6 +63,7 @@ Language accepted by the compiler is described with the following grammar:
                 | pidentifier(num)
 
 ## Example program
+Simple program written in language accepted by compiler:
 [ Factorization ]
 DECLARE
     n; m; reminder; power; divisor;
