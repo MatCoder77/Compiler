@@ -1,5 +1,5 @@
 # About
-Register machine created by Dr Maciej Gębala as a part of Formal Languages and Translation Techniques.
+Register machine created by Dr Maciej Gębala as a part of Formal Languages and Translation Techniques course.
 
 # Usage
 Build the project using 'make'  command. Run one of the following versions:
