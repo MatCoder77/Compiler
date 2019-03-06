@@ -65,31 +65,33 @@ Language accepted by the compiler is described with the following grammar:
 ## Example program
 Simple program written in language accepted by compiler:
 
-[ Factorization ]
-DECLARE
-    n; m; reminder; power; divisor;
-IN
-    READ n;
-    divisor := 2;
-    m := divisor * divisor;
-    WHILE n >= m DO
-        power := 0;
-        reminder := n % divisor;
-        WHILE reminder = 0 DO
-            n := n / divisor;
-            power := power + 1;
-            reminder := n % divisor;
+Poniżej znajduje się przykładowy program napisany w tym języku:
+
+    [ Factorization ]
+    DECLARE
+        n; m; reszta; potega; dzielnik;
+    IN
+        READ n;
+        dzielnik := 2;
+        m := dzielnik * dzielnik;
+        WHILE n >= m DO
+            potega := 0;
+            reszta := n % dzielnik;
+            WHILE reszta = 0 DO
+                n := n / dzielnik;
+                potega := potega + 1;
+                reszta := n % dzielnik;
+            ENDWHILE
+            IF potega > 0 THEN [ czy znaleziono dzielnik ]
+                WRITE dzielnik;
+                WRITE potega;
+            ELSE
+                dzielnik := dzielnik + 1;
+                m := dzielnik * dzielnik;
+            ENDIF
         ENDWHILE
-        IF power > 0 THEN [ is divisor found ]
-            WRITE divisor;
-            WRITE power;
-        ELSE
-            divisor := divisor + 1;
-            m := divisor * divisor;
+        IF n != 1 THEN [ ostatni dzielnik ]
+            WRITE n;
+            WRITE 1;
         ENDIF
-    ENDWHILE
-    IF n != 1 THEN [ last divisor ]
-        WRITE n;
-        WRITE 1;
-    ENDIF
-END
+    END
