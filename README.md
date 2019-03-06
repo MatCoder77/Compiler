@@ -69,28 +69,28 @@ Poniżej znajduje się przykładowy program napisany w tym języku:
 
     [ Factorization ]
     DECLARE
-        n; m; reszta; potega; dzielnik;
+        n; m; remainder; power; factor;
     IN
         READ n;
-        dzielnik := 2;
-        m := dzielnik * dzielnik;
+        factor := 2;
+        m := factor * factor;
         WHILE n >= m DO
-            potega := 0;
-            reszta := n % dzielnik;
-            WHILE reszta = 0 DO
-                n := n / dzielnik;
-                potega := potega + 1;
-                reszta := n % dzielnik;
+            power := 0;
+            remainder := n % factor;
+            WHILE remainder = 0 DO
+                n := n / factor;
+                power := power + 1;
+                remainder := n % factor;
             ENDWHILE
-            IF potega > 0 THEN [ czy znaleziono dzielnik ]
-                WRITE dzielnik;
-                WRITE potega;
+            IF power > 0 THEN [ found factor ]
+                WRITE factor;
+                WRITE power;
             ELSE
-                dzielnik := dzielnik + 1;
-                m := dzielnik * dzielnik;
+                factor := factor + 1;
+                m := factor * factor;
             ENDIF
         ENDWHILE
-        IF n != 1 THEN [ ostatni dzielnik ]
+        IF n != 1 THEN [ last factor ]
             WRITE n;
             WRITE 1;
         ENDIF
