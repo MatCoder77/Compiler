@@ -65,8 +65,6 @@ Language accepted by the compiler is described with the following grammar:
 ## Example program
 Simple program written in language accepted by compiler:
 
-Poniżej znajduje się przykładowy program napisany w tym języku:
-
     [ Factorization ]
     DECLARE
         n; m; remainder; power; factor;
